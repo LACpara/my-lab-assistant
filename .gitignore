@@ -1,4 +1,9 @@
 output
+outputs
+instance
+uploads
+
+.cache
 *.db
 *.env
 __pycache__

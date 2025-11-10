@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PDF2MD Upload</title>
+    <style>
+        .progress-bar {
+            width: 0%;
+            height: 20px;
+            background: green;
+            transition: width 0.5s;
+        }
+    </style>
+    <script>
+        function simulateProgress() {
+            let bar = document.getElementById("progress");
+            let width = 0;
+            let interval = setInterval(() => {
+                if (width >= 90) {
+                    clearInterval(interval);
+                    return;
+                }
+                width += 10;
+                bar.style.width = width + "%";
+            }, 300);
+        }
+    </script>
+</head>
+
+<body>
+    <h1>上传 PDF 文件</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for msg in messages %}<li>{{ msg }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <form method="post" enctype="multipart/form-data" onsubmit="simulateProgress()">
+        <input type="file" name="file" required>
+        <button type="submit">上传并处理</button>
+    </form>
+
+    <div class="progress-bar" id="progress"></div>
+
+    <h2>已上传文件</h2>
+    <ul>
+        {% for file in files %}
+        <li>{{ file.filename }} - 状态: {{ file.status }}</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

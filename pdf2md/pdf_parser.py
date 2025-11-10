@@ -4,6 +4,34 @@ from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 
+import os
+from docling.datamodel.base_models import InputFormat
+from docling.datamodel.pipeline_options import PdfPipelineOptions
+from docling.document_converter import DocumentConverter, PdfFormatOption
+
+def predownload_docling_model(cache_dir=None):
+    """
+    预先下载 Docling 模型到本地缓存
+    """
+    pipeline_options = PdfPipelineOptions()
+    converter = DocumentConverter(
+        format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)}
+    )
+    # 调用一次 convert 模拟模型加载
+    dummy_pdf = os.path.join(cache_dir or "/tmp", "dummy.pdf")
+    # 创建空 PDF 文件
+    if not os.path.exists(dummy_pdf):
+        from reportlab.pdfgen import canvas
+        c = canvas.Canvas(dummy_pdf)
+        c.drawString(100, 750, "Dummy")
+        c.save()
+    try:
+        converter.convert(dummy_pdf)
+    except Exception:
+        # 我们只需要模型被下载并缓存即可
+        pass
+
+
 
 def parse_pdf_with_docling(pdf_path, do_ocr=False, save_json=None, save_pickle=None):
     """
